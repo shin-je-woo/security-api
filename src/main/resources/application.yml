@@ -1,0 +1,30 @@
+spring:
+  datasource:
+    url: jdbc:mysql://43.201.188.14:3306/securityapi
+    username: shinjw
+    password: shinjwpass
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        #        show_sql: true
+        format_sql: true
+        highlight_sql: true
+    database: mysql
+
+logging:
+  level:
+    org.hibernate:
+      SQL: debug
+  #    type: trace
+
+
+decorator:
+  datasource:
+    p6spy:
+      enable-logging: true
+      logging: slf4j
+      multiline: true
