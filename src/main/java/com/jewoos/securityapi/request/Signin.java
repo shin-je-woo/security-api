@@ -1,4 +1,4 @@
-package com.jewoos.securityapi.dto.request;
+package com.jewoos.securityapi.request;
 
 import lombok.Getter;
 

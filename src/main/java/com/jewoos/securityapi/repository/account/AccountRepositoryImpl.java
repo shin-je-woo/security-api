@@ -1,4 +1,4 @@
-package com.jewoos.securityapi.repository;
+package com.jewoos.securityapi.repository.account;
 
 import com.jewoos.securityapi.security.service.AccountDetails;
 import com.querydsl.core.types.Projections;
@@ -22,7 +22,7 @@ public class AccountRepositoryImpl implements AccountRepositoryQuery {
                 .select(Projections.fields(AccountDetails.class,
                         account.userId,
                         account.password,
-                        role.roleName))
+                        role.roleType))
                 .from(account)
                 .join(accountRole).fetchJoin()
                 .join(role).fetchJoin();

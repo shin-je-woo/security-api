@@ -1,6 +1,6 @@
 package com.jewoos.securityapi.security.service;
 
-import com.jewoos.securityapi.repository.AccountRepository;
+import com.jewoos.securityapi.repository.account.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

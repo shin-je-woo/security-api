@@ -1,6 +1,6 @@
 package com.jewoos.securityapi;
 
-import com.jewoos.securityapi.dto.request.Signup;
+import com.jewoos.securityapi.request.Signup;
 import com.jewoos.securityapi.service.AccountService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

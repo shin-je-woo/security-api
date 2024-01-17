@@ -1,7 +1,7 @@
 package com.jewoos.securityapi.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jewoos.securityapi.repository.AccountRepository;
+import com.jewoos.securityapi.repository.account.AccountRepository;
 import com.jewoos.securityapi.security.filter.ApiLoginFilter;
 import com.jewoos.securityapi.security.provider.ApiLoginProvider;
 import com.jewoos.securityapi.security.service.AccountDetailsService;

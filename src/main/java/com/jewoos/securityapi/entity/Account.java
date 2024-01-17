@@ -1,5 +1,6 @@
 package com.jewoos.securityapi.entity;
 
+import com.jewoos.securityapi.request.Signup;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -16,7 +17,7 @@ import java.util.List;
         @UniqueConstraint(name = "uk_account_id",
                 columnNames = {"account_id"}),
         @UniqueConstraint(name = "uk_email",
-                columnNames ={"email"})
+                columnNames = {"email"})
 })
 public class Account {
 
@@ -40,6 +41,25 @@ public class Account {
     public Account(String userId, String email, String password) {
         this.userId = userId;
         this.email = email;
+        this.password = password;
+    }
+
+    public static Account createAccount(Signup signup, AccountRole... accountRoles) {
+        Account account = Account.builder()
+                .userId(signup.getUserId())
+                .password(signup.getPassword())
+                .email(signup.getEmail())
+                .build();
+
+        for (AccountRole accountRole : accountRoles) {
+            accountRole.setAccount(account);
+            account.getAccountRoles().add(accountRole);
+        }
+
+        return account;
+    }
+
+    public void changePassword(String password) {
         this.password = password;
     }
 }

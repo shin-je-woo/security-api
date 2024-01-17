@@ -1,4 +1,4 @@
-package com.jewoos.securityapi.repository;
+package com.jewoos.securityapi.repository.account;
 
 import com.jewoos.securityapi.security.service.AccountDetails;
 

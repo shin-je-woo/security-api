@@ -35,3 +35,8 @@ out/
 
 ### VS Code ###
 .vscode/
+out\
+.gradle\
+.idea\
+gradle\
+src/main/generated

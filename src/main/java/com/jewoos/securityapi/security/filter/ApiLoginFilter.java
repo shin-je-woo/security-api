@@ -1,7 +1,7 @@
 package com.jewoos.securityapi.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jewoos.securityapi.dto.request.Signin;
+import com.jewoos.securityapi.request.Signin;
 import com.jewoos.securityapi.security.token.AccountToken;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

@@ -1,5 +1,6 @@
 package com.jewoos.securityapi.entity;
 
+import com.jewoos.securityapi.enums.RoleType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -17,5 +18,10 @@ public class Role {
     private Long id;
 
     @Column(nullable = false, length = 20)
-    private String roleName;
+    @Enumerated(EnumType.STRING)
+    private RoleType roleType;
+
+    public Role(RoleType roleType) {
+        this.roleType = roleType;
+    }
 }
