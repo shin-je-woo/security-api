@@ -35,7 +35,7 @@ public class Account {
     private String password;
 
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<AccountRole> accountRoles = new ArrayList<>();
+    private final List<AccountRole> accountRoles = new ArrayList<>();
 
     @Builder
     public Account(String userId, String email, String password) {

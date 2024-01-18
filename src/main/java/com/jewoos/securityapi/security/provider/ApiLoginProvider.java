@@ -26,7 +26,7 @@ public class ApiLoginProvider implements AuthenticationProvider {
             throw new BadCredentialsException("BadCredentialsException");
         }
 
-        return new AccountToken(accountDetails.getUsername(), accountDetails.getPassword(), accountDetails.getAuthorities());
+        return new AccountToken(accountDetails, accountDetails.getPassword(), accountDetails.getAuthorities());
     }
 
     @Override

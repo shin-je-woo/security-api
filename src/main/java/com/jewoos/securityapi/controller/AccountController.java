@@ -1,4 +1,4 @@
-package com.jewoos.securityapi;
+package com.jewoos.securityapi.controller;
 
 import com.jewoos.securityapi.request.Signup;
 import com.jewoos.securityapi.service.AccountService;

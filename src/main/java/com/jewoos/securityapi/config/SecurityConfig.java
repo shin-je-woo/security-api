@@ -3,6 +3,8 @@ package com.jewoos.securityapi.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jewoos.securityapi.repository.account.AccountRepository;
 import com.jewoos.securityapi.security.filter.ApiLoginFilter;
+import com.jewoos.securityapi.security.handler.LoginFailureHandler;
+import com.jewoos.securityapi.security.handler.LoginSuccessHandler;
 import com.jewoos.securityapi.security.provider.ApiLoginProvider;
 import com.jewoos.securityapi.security.service.AccountDetailsService;
 import lombok.RequiredArgsConstructor;
@@ -47,8 +49,8 @@ public class SecurityConfig {
     @Bean
     public ApiLoginFilter apiLoginFilter() {
         ApiLoginFilter apiLoginFilter = new ApiLoginFilter(objectMapper);
-//        apiLoginFilter.setAuthenticationSuccessHandler();
-//        apiLoginFilter.setAuthenticationFailureHandler();
+        apiLoginFilter.setAuthenticationSuccessHandler(new LoginSuccessHandler(objectMapper));
+        apiLoginFilter.setAuthenticationFailureHandler(new LoginFailureHandler(objectMapper));
         apiLoginFilter.setAuthenticationManager(authenticationManager());
         return apiLoginFilter;
     }

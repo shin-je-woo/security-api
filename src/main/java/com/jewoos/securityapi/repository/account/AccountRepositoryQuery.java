@@ -1,10 +1,10 @@
 package com.jewoos.securityapi.repository.account;
 
-import com.jewoos.securityapi.security.service.AccountDetails;
+import com.jewoos.securityapi.entity.Account;
 
 import java.util.Optional;
 
 public interface AccountRepositoryQuery {
 
-    Optional<AccountDetails> findByUserIdWithRole(String userId);
+    Optional<Account> findAllWithRole(String userId);
 }

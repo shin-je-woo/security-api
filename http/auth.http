@@ -1,0 +1,19 @@
+### 회원가입
+POST http://localhost:8080/signup
+Content-Type: application/json
+
+{
+  "userId": "qwe",
+  "password": "qweqwe",
+  "email": "qweqwe@qweqweqwe.qweqwe"
+}
+
+
+### 로그인
+POST http://localhost:8080/login
+Content-Type: application/json
+
+{
+  "userId": "qwe",
+  "password": "qwe222qwe"
+}

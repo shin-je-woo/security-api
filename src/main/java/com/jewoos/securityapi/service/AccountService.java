@@ -23,11 +23,14 @@ public class AccountService {
     @Transactional
     public void signup(Signup signup) {
 
-        Role role = roleRepository.findByRoleType(RoleType.ROLE_USER)
+        Role userRole = roleRepository.findByRoleType(RoleType.ROLE_USER)
                 .orElseThrow(() -> new IllegalStateException("USER권한이 존재하지 않습니다."));
+        Role adminRole = roleRepository.findByRoleType(RoleType.ROLE_ADMIN)
+                .orElseThrow(() -> new IllegalStateException("ADMIN권한이 존재하지 않습니다."));
 
-        AccountRole accountRole = AccountRole.createAccountRole(role);
-        Account account = Account.createAccount(signup, accountRole);
+        AccountRole accountRoleUser = AccountRole.createAccountRole(userRole);
+        AccountRole accountRoleAdmin = AccountRole.createAccountRole(adminRole);
+        Account account = Account.createAccount(signup, accountRoleUser, accountRoleAdmin);
         account.changePassword(passwordEncoder.encode(signup.getPassword()));
 
         accountRepository.save(account);

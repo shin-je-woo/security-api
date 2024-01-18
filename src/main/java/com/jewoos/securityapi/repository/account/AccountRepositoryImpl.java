@@ -1,8 +1,6 @@
 package com.jewoos.securityapi.repository.account;
 
-import com.jewoos.securityapi.security.service.AccountDetails;
-import com.querydsl.core.types.Projections;
-import com.querydsl.jpa.impl.JPAQuery;
+import com.jewoos.securityapi.entity.Account;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
@@ -17,16 +15,14 @@ public class AccountRepositoryImpl implements AccountRepositoryQuery {
 
     private final JPAQueryFactory queryFactory;
 
-    public Optional<AccountDetails> findByUserIdWithRole(String userId) {
-        JPAQuery<AccountDetails> query = queryFactory
-                .select(Projections.fields(AccountDetails.class,
-                        account.userId,
-                        account.password,
-                        role.roleType))
-                .from(account)
-                .join(accountRole).fetchJoin()
-                .join(role).fetchJoin();
+    public Optional<Account> findAllWithRole(String userId) {
+        Account result = queryFactory
+                .selectFrom(account)
+                .join(account.accountRoles, accountRole).fetchJoin()
+                .join(accountRole.role, role).fetchJoin()
+                .where(account.userId.eq(userId))
+                .fetchOne();
 
-        return Optional.ofNullable(query.fetchOne());
+        return Optional.ofNullable(result);
     }
 }
