@@ -2,11 +2,12 @@ package com.jewoos.securityapi.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jewoos.securityapi.response.TokenResponse;
+import com.jewoos.securityapi.security.jwt.JwtProperties;
+import com.jewoos.securityapi.security.jwt.JwtProvider;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
@@ -15,26 +16,25 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-@Slf4j
 @RequiredArgsConstructor
 public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
     private final ObjectMapper objectMapper;
+    private final JwtProvider jwtProvider;
+    private final JwtProperties jwtProperties;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        log.info("{} 사용자가 로그인에 성공했습니다.", authentication.getName());
-
+        String accessToken = jwtProvider.generateToken(authentication, jwtProperties.getAccessExpirationTime());
+        String refreshToken = jwtProvider.generateToken(authentication, jwtProperties.getRefreshExpirationTime());
         TokenResponse tokenResponse = TokenResponse.builder()
-                .accessToken(authentication.getName())
-                .refreshToken("리프레쉬 토큰")
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
                 .build();
-
-        String tokenResponseJson = objectMapper.writeValueAsString(tokenResponse);
 
         response.setStatus(HttpStatus.OK.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(StandardCharsets.UTF_8.displayName());
-        response.getWriter().write(tokenResponseJson);
+        objectMapper.writeValue(response.getWriter(), tokenResponse);
     }
 }

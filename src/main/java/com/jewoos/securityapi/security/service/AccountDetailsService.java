@@ -19,7 +19,7 @@ public class AccountDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
         Account account = accountRepository.findAllWithRole(userId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+                .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 사용자입니다."));
 
         List<SimpleGrantedAuthority> authorities = account.getAccountRoles().stream()
                 .map(AccountRole::getRole)

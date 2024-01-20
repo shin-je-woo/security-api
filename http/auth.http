@@ -15,5 +15,9 @@ Content-Type: application/json
 
 {
   "userId": "qwe",
-  "password": "qwe222qwe"
+  "password": "qweqwe"
 }
+
+### 인증 사용자 테스트
+GET http://localhost:8080/hello
+Authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1aWQiOiJxd2qwIjoiUk9MRV9BRE1JTixST0xFX1VTRVIiLCJpc3MiOiJqZXdvb3Muc2l0ZSIsImV4cCI6MTcwNTc1MDgwMH0.GMNiXW16_1lQ-Q45G3F0w2DhoUFIOZhQCIuzMNURfuQ

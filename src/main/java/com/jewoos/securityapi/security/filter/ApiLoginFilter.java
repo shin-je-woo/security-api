@@ -6,6 +6,7 @@ import com.jewoos.securityapi.security.token.AccountToken;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
@@ -28,7 +29,7 @@ public class ApiLoginFilter extends AbstractAuthenticationProcessingFilter {
 
         Signin signin = objectMapper.readValue(request.getReader(), Signin.class);
         if (!StringUtils.hasText(signin.getUserId()) || !StringUtils.hasText(signin.getPassword()))
-            throw new IllegalArgumentException("userId or password is not valid");
+            throw new AuthenticationServiceException("userId or password is not valid");
 
         AccountToken accountToken = new AccountToken(signin.getUserId(), signin.getPassword());
 

@@ -1,6 +1,8 @@
 package com.jewoos.securityapi.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jewoos.securityapi.error.ErrorCode;
+import com.jewoos.securityapi.error.ErrorResponse;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -25,6 +27,7 @@ public class LoginFailureHandler implements AuthenticationFailureHandler {
         response.setStatus(HttpStatus.BAD_REQUEST.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(StandardCharsets.UTF_8.displayName());
-        response.getWriter().write("아이디 혹은 비밀번호가 올바르지 않습니다.");
+        ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.INVALID_ID_PW);
+        objectMapper.writeValue(response.getWriter(), errorResponse);
     }
 }

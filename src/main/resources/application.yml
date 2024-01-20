@@ -28,3 +28,8 @@ decorator:
       enable-logging: true
       logging: slf4j
       multiline: true
+
+my-jwt:
+  secret: gyJvbh66SjHHBwfVTAw5mOnG_W0LlyIft8aBM-Oz9ws
+  accessExpirationTime: 180_000
+  refreshExpirationTime: 86_400_000

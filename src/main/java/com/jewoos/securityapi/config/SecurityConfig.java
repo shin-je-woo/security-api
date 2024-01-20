@@ -3,8 +3,11 @@ package com.jewoos.securityapi.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jewoos.securityapi.repository.account.AccountRepository;
 import com.jewoos.securityapi.security.filter.ApiLoginFilter;
+import com.jewoos.securityapi.security.filter.JwtAuthenticationFilter;
 import com.jewoos.securityapi.security.handler.LoginFailureHandler;
 import com.jewoos.securityapi.security.handler.LoginSuccessHandler;
+import com.jewoos.securityapi.security.jwt.JwtProperties;
+import com.jewoos.securityapi.security.jwt.JwtProvider;
 import com.jewoos.securityapi.security.provider.ApiLoginProvider;
 import com.jewoos.securityapi.security.service.AccountDetailsService;
 import lombok.RequiredArgsConstructor;
@@ -20,12 +23,16 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.context.NullSecurityContextRepository;
+import org.springframework.security.web.context.SecurityContextHolderFilter;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    private final JwtProvider jwtProvider;
+    private final JwtProperties jwtProperties;
     private final ObjectMapper objectMapper;
     private final AccountRepository accountRepository;
 
@@ -41,17 +48,20 @@ public class SecurityConfig {
                         .requestMatchers("/", "/login*", "signup*").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(apiLoginFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(new JwtAuthenticationFilter(objectMapper, jwtProvider), SecurityContextHolderFilter.class)
                 .formLogin(AbstractHttpConfigurer::disable)
-                .csrf(AbstractHttpConfigurer::disable);
+                .csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(AbstractHttpConfigurer::disable);
 
         return http.getOrBuild();
     }
     @Bean
     public ApiLoginFilter apiLoginFilter() {
         ApiLoginFilter apiLoginFilter = new ApiLoginFilter(objectMapper);
-        apiLoginFilter.setAuthenticationSuccessHandler(new LoginSuccessHandler(objectMapper));
+        apiLoginFilter.setAuthenticationSuccessHandler(new LoginSuccessHandler(objectMapper, jwtProvider, jwtProperties));
         apiLoginFilter.setAuthenticationFailureHandler(new LoginFailureHandler(objectMapper));
         apiLoginFilter.setAuthenticationManager(authenticationManager());
+        apiLoginFilter.setSecurityContextRepository(new NullSecurityContextRepository()); // JWT는 stateless특징
         return apiLoginFilter;
     }
 
