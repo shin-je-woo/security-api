@@ -49,7 +49,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http.authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/login*", "signup*").permitAll()
+                        .requestMatchers("/", "/login*", "signup*", "/token*").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(apiLoginFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterAfter(new JwtAuthenticationFilter(objectMapper, jwtProvider), SecurityContextHolderFilter.class)

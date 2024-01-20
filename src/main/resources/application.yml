@@ -15,6 +15,12 @@ spring:
         highlight_sql: true
     database: mysql
 
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      connect-timeout: 60000
+
 logging:
   level:
     org.hibernate:
