@@ -6,6 +6,8 @@ import com.jewoos.securityapi.security.filter.ApiLoginFilter;
 import com.jewoos.securityapi.security.filter.JwtAuthenticationFilter;
 import com.jewoos.securityapi.security.handler.LoginFailureHandler;
 import com.jewoos.securityapi.security.handler.LoginSuccessHandler;
+import com.jewoos.securityapi.security.handler.NoAuthenticationHandler;
+import com.jewoos.securityapi.security.handler.NoAuthorizationHandler;
 import com.jewoos.securityapi.security.jwt.JwtProperties;
 import com.jewoos.securityapi.security.jwt.JwtProvider;
 import com.jewoos.securityapi.security.provider.ApiLoginProvider;
@@ -15,6 +17,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -28,6 +31,7 @@ import org.springframework.security.web.context.SecurityContextHolderFilter;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -51,7 +55,10 @@ public class SecurityConfig {
                 .addFilterAfter(new JwtAuthenticationFilter(objectMapper, jwtProvider), SecurityContextHolderFilter.class)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(AbstractHttpConfigurer::disable);
+                .sessionManagement(AbstractHttpConfigurer::disable)
+                .exceptionHandling(handler -> handler
+                        .authenticationEntryPoint(new NoAuthenticationHandler(objectMapper))
+                        .accessDeniedHandler(new NoAuthorizationHandler(objectMapper)));
 
         return http.getOrBuild();
     }
