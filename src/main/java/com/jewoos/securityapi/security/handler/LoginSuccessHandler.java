@@ -25,8 +25,8 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        String accessToken = jwtProvider.generateToken(authentication, jwtProperties.getAccessExpirationTime());
-        String refreshToken = jwtProvider.generateToken(authentication, jwtProperties.getRefreshExpirationTime());
+        String accessToken = jwtProvider.createAccessToken(authentication);
+        String refreshToken = jwtProvider.createRefreshToken(authentication.getName());
         TokenResponse tokenResponse = TokenResponse.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)

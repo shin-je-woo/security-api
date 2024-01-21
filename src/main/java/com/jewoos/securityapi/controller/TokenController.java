@@ -1,22 +1,23 @@
 package com.jewoos.securityapi.controller;
 
+import com.jewoos.securityapi.response.TokenResponse;
+import com.jewoos.securityapi.security.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.HashOperations;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
 public class TokenController {
 
-    private final RedisTemplate<String, Object> redisTemplate;
+    private final JwtProvider jwtProvider;
 
-    @GetMapping("/token")
-    public String refreshToken() {
-        HashOperations<String, Object, Object> ops = redisTemplate.opsForHash();
-        ops.put("refreshToken", "22222", "userId2");
-
-        return "success;";
+    @PostMapping("/token")
+    public ResponseEntity<TokenResponse> refreshToken(@RequestParam String refreshToken) {
+        TokenResponse tokenResponse = jwtProvider.reIssueToken(refreshToken);
+        return new ResponseEntity<>(tokenResponse, HttpStatus.OK);
     }
 }

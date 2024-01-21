@@ -12,6 +12,7 @@ import com.jewoos.securityapi.security.jwt.JwtProperties;
 import com.jewoos.securityapi.security.jwt.JwtProvider;
 import com.jewoos.securityapi.security.provider.ApiLoginProvider;
 import com.jewoos.securityapi.security.service.AccountDetailsService;
+import com.jewoos.securityapi.security.service.RedisService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,10 +36,10 @@ import org.springframework.security.web.context.SecurityContextHolderFilter;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final JwtProvider jwtProvider;
     private final JwtProperties jwtProperties;
     private final ObjectMapper objectMapper;
     private final AccountRepository accountRepository;
+    private final RedisService redisService;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -52,7 +53,7 @@ public class SecurityConfig {
                         .requestMatchers("/", "/login*", "signup*", "/token*").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(apiLoginFilter(), UsernamePasswordAuthenticationFilter.class)
-                .addFilterAfter(new JwtAuthenticationFilter(objectMapper, jwtProvider), SecurityContextHolderFilter.class)
+                .addFilterAfter(new JwtAuthenticationFilter(objectMapper, jwtProvider()), SecurityContextHolderFilter.class)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(AbstractHttpConfigurer::disable)
@@ -65,7 +66,7 @@ public class SecurityConfig {
     @Bean
     public ApiLoginFilter apiLoginFilter() {
         ApiLoginFilter apiLoginFilter = new ApiLoginFilter(objectMapper);
-        apiLoginFilter.setAuthenticationSuccessHandler(new LoginSuccessHandler(objectMapper, jwtProvider, jwtProperties));
+        apiLoginFilter.setAuthenticationSuccessHandler(new LoginSuccessHandler(objectMapper, jwtProvider(), jwtProperties));
         apiLoginFilter.setAuthenticationFailureHandler(new LoginFailureHandler(objectMapper));
         apiLoginFilter.setAuthenticationManager(authenticationManager());
         apiLoginFilter.setSecurityContextRepository(new NullSecurityContextRepository()); // JWT는 stateless특징
@@ -81,5 +82,10 @@ public class SecurityConfig {
     @Bean
     public UserDetailsService userDetailsService() {
         return new AccountDetailsService(accountRepository);
+    }
+
+    @Bean
+    public JwtProvider jwtProvider() {
+        return new JwtProvider(jwtProperties, userDetailsService(), redisService);
     }
 }
