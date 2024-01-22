@@ -37,5 +37,16 @@ decorator:
 
 my-jwt:
   secret: gyJvbh66SjHHBwfVTAw5mOnG_W0LlyIft8aBM-Oz9ws
-  accessExpirationTime: 60_000
-  refreshExpirationTime: 180_000
+  accessExpirationTime: 180_000
+  refreshExpirationTime: 720_000
+
+---
+spring:
+  profiles:
+    active: prod
+
+  data:
+    redis:
+      host: redis
+      port: 6379
+      connect-timeout: 60000

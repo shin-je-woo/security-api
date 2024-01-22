@@ -25,9 +25,7 @@ public class InitDataLoader implements ApplicationListener<ApplicationReadyEvent
     }
 
     private Role createRoleIfNotFound(RoleType roleType) {
-        Role role = roleRepository.findByRoleType(roleType)
-                .orElseGet(() -> new Role(roleType));
-
-        return roleRepository.save(role);
+        return roleRepository.findByRoleType(roleType)
+                .orElseGet(() -> roleRepository.save(new Role(roleType)));
     }
 }
