@@ -21,6 +21,17 @@ spring:
       port: 6379
       connect-timeout: 60000
 
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 8188129273-lu2omksjkre2mvivus8cpdv05oqknbdq.apps.googleusercontent.com
+            client-secret: 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
+            scope:
+              - profile
+              - email
+
 logging:
   level:
     org.hibernate:
