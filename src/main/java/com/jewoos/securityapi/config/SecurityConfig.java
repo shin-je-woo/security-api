@@ -12,8 +12,10 @@ import com.jewoos.securityapi.security.jwt.JwtProperties;
 import com.jewoos.securityapi.security.jwt.JwtProvider;
 import com.jewoos.securityapi.security.provider.ApiLoginProvider;
 import com.jewoos.securityapi.security.service.AccountDetailsService;
+import com.jewoos.securityapi.security.service.CustomOAuth2UserSerivce;
 import com.jewoos.securityapi.security.service.RedisService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,10 +23,14 @@ import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.context.NullSecurityContextRepository;
@@ -50,8 +56,11 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http.authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/login*", "signup*", "/token*").permitAll()
+                        .requestMatchers("/", "/login*", "signup*", "/token*", "/error*").permitAll()
                         .anyRequest().authenticated())
+                .oauth2Login(oauth2 -> oauth2
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(oAuth2UserService())))
                 .addFilterBefore(apiLoginFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterAfter(new JwtAuthenticationFilter(objectMapper, jwtProvider()), SecurityContextHolderFilter.class)
                 .formLogin(AbstractHttpConfigurer::disable)
@@ -63,6 +72,7 @@ public class SecurityConfig {
 
         return http.getOrBuild();
     }
+
     @Bean
     public ApiLoginFilter apiLoginFilter() {
         ApiLoginFilter apiLoginFilter = new ApiLoginFilter(objectMapper);
@@ -88,4 +98,10 @@ public class SecurityConfig {
     public JwtProvider jwtProvider() {
         return new JwtProvider(jwtProperties, userDetailsService(), redisService);
     }
+
+    @Bean
+    public OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2UserService() {
+        return new CustomOAuth2UserSerivce(accountRepository);
+    }
+
 }
