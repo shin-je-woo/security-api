@@ -2,7 +2,6 @@ package com.jewoos.securityapi.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jewoos.securityapi.response.TokenResponse;
-import com.jewoos.securityapi.security.jwt.JwtProperties;
 import com.jewoos.securityapi.security.jwt.JwtProvider;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,7 +20,6 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
     private final ObjectMapper objectMapper;
     private final JwtProvider jwtProvider;
-    private final JwtProperties jwtProperties;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
