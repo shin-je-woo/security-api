@@ -19,7 +19,7 @@ public class CustomOAuth2UserSerivce extends DefaultOAuth2UserService {
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
 
         OAuth2User oAuth2User = super.loadUser(userRequest);
-        OAuth2UserInfo oAuth2UserInfo = OAuthAttributes.ofResponse(registrationId, oAuth2User.getAttribute("response"));
+        OAuth2UserInfo oAuth2UserInfo = OAuthAttributes.of(registrationId, oAuth2User.getAttributes());
 
         // provider로부터 받아온 사용자정보로 회원가입 or 로그인 처리
         return accountService.getOrSignupOAuth2User(oAuth2UserInfo);
