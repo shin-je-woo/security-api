@@ -10,6 +10,7 @@ import com.jewoos.securityapi.security.handler.NoAuthenticationHandler;
 import com.jewoos.securityapi.security.handler.NoAuthorizationHandler;
 import com.jewoos.securityapi.security.jwt.JwtProperties;
 import com.jewoos.securityapi.security.jwt.JwtProvider;
+import com.jewoos.securityapi.security.oauth2.CookieOAuth2AuthorizationRequestRepository;
 import com.jewoos.securityapi.security.provider.ApiLoginProvider;
 import com.jewoos.securityapi.security.service.AccountDetailsService;
 import com.jewoos.securityapi.security.service.CustomOAuth2UserSerivce;
@@ -57,6 +58,8 @@ public class SecurityConfig {
                 .oauth2Login(oauth2 -> oauth2
                         .userInfoEndpoint(userInfo -> userInfo
                                 .userService(new CustomOAuth2UserSerivce(accountService)))
+                        .authorizationEndpoint(authorzation -> authorzation
+                                .authorizationRequestRepository(new CookieOAuth2AuthorizationRequestRepository()))
                         .successHandler(new LoginSuccessHandler(objectMapper, jwtProvider()))
                         .failureHandler(new LoginFailureHandler(objectMapper)))
                 .addFilterBefore(apiLoginFilter(), UsernamePasswordAuthenticationFilter.class)
