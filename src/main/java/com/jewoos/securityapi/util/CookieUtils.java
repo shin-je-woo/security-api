@@ -3,6 +3,7 @@ package com.jewoos.securityapi.util;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.ResponseCookie;
 import org.springframework.util.SerializationUtils;
 import org.springframework.util.StringUtils;
 
@@ -17,7 +18,7 @@ public final class CookieUtils {
     }
 
     public static Optional<Cookie> getCookie(HttpServletRequest request, String name) {
-        if (!StringUtils.hasText(name)) return Optional.empty();
+        if (!StringUtils.hasText(name) || request.getCookies() == null) return Optional.empty();
 
         return Arrays.stream(request.getCookies())
                 .filter(cookie -> cookie.getName().equals(name))
@@ -25,15 +26,19 @@ public final class CookieUtils {
     }
 
     public static void addCookie(HttpServletResponse response, String name, String value, int maxAge) {
-        Cookie cookie = new Cookie(name, value);
-
-        cookie.setPath("/");
-        cookie.setHttpOnly(true);
-        cookie.setMaxAge(maxAge);
-        response.addCookie(cookie);
+        ResponseCookie cookie = ResponseCookie.from(name, value)
+                .sameSite("none")
+                .path("/")
+                .maxAge(maxAge)
+                .secure(true)
+                .httpOnly(true)
+                .build();
+        response.addHeader("Set-Cookie", cookie.toString());
     }
 
     public static void deleteCookie(HttpServletRequest request, HttpServletResponse response, String name) {
+        if (request.getCookies() == null) return;
+
         Arrays.stream(request.getCookies())
                 .filter(cookie -> cookie.getName().equals(name))
                 .forEach(cookie -> {
