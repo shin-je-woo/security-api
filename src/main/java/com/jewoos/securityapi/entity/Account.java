@@ -6,9 +6,13 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Getter
 @Entity
@@ -61,5 +65,12 @@ public class Account {
 
     public void changePassword(String password) {
         this.password = password;
+    }
+
+    public Set<Role> getRoles() {
+        if(CollectionUtils.isEmpty(this.accountRoles)) return Collections.emptySet();
+        return this.accountRoles.stream()
+                .map(AccountRole::getRole)
+                .collect(Collectors.toSet());
     }
 }

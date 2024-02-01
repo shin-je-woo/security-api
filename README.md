@@ -8,3 +8,4 @@
 - Querydsl 5.0.0
 - JDK17
 - Mysql5.7
+- AOuth2-client 3.1.4

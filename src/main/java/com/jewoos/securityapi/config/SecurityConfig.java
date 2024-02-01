@@ -10,9 +10,12 @@ import com.jewoos.securityapi.security.handler.NoAuthenticationHandler;
 import com.jewoos.securityapi.security.handler.NoAuthorizationHandler;
 import com.jewoos.securityapi.security.jwt.JwtProperties;
 import com.jewoos.securityapi.security.jwt.JwtProvider;
+import com.jewoos.securityapi.security.oauth2.CookieOAuth2AuthorizationRequestRepository;
 import com.jewoos.securityapi.security.provider.ApiLoginProvider;
 import com.jewoos.securityapi.security.service.AccountDetailsService;
+import com.jewoos.securityapi.security.service.CustomOAuth2UserSerivce;
 import com.jewoos.securityapi.security.service.RedisService;
+import com.jewoos.securityapi.service.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -43,15 +46,22 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-            return new BCryptPasswordEncoder();
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, AccountService accountService) throws Exception {
 
         http.authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/login*", "signup*", "/token*").permitAll()
+                        .requestMatchers("/", "/login*", "signup*", "/token*", "/error*", "/oauth2*").permitAll()
                         .anyRequest().authenticated())
+                .oauth2Login(oauth2 -> oauth2
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(new CustomOAuth2UserSerivce(accountService)))
+                        .authorizationEndpoint(authorzation -> authorzation
+                                .authorizationRequestRepository(new CookieOAuth2AuthorizationRequestRepository()))
+                        .successHandler(new LoginSuccessHandler(objectMapper, jwtProvider()))
+                        .failureHandler(new LoginFailureHandler(objectMapper)))
                 .addFilterBefore(apiLoginFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterAfter(new JwtAuthenticationFilter(objectMapper, jwtProvider()), SecurityContextHolderFilter.class)
                 .formLogin(AbstractHttpConfigurer::disable)
@@ -63,10 +73,11 @@ public class SecurityConfig {
 
         return http.getOrBuild();
     }
+
     @Bean
     public ApiLoginFilter apiLoginFilter() {
         ApiLoginFilter apiLoginFilter = new ApiLoginFilter(objectMapper);
-        apiLoginFilter.setAuthenticationSuccessHandler(new LoginSuccessHandler(objectMapper, jwtProvider(), jwtProperties));
+        apiLoginFilter.setAuthenticationSuccessHandler(new LoginSuccessHandler(objectMapper, jwtProvider()));
         apiLoginFilter.setAuthenticationFailureHandler(new LoginFailureHandler(objectMapper));
         apiLoginFilter.setAuthenticationManager(authenticationManager());
         apiLoginFilter.setSecurityContextRepository(new NullSecurityContextRepository()); // JWT는 stateless특징
