@@ -7,7 +7,7 @@ on:
       - reopened
       - synchronize
 
-permissions: read-all
+permissions: write-all
 
 jobs:
   build-test:
