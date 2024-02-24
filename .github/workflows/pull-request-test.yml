@@ -26,6 +26,10 @@ jobs:
           distribution: zulu
           cache: 'gradle'
 
+      # Gradle wrapper 파일 실행 권한주기
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
       - name: Gradle Build
         run:
           ./gradlew build --parallel
