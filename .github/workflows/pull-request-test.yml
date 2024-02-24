@@ -7,14 +7,11 @@ on:
       - reopened
       - synchronize
 
-permissions: write-all
+permissions: read-all
 
 jobs:
   build-test:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pull-requests: write
     steps:
       - name: Git checkout
         uses: actions/checkout@v3
