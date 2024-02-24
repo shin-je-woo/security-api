@@ -32,4 +32,4 @@ jobs:
 
       - name: Gradle Build
         run:
-          ./gradlew build --parallel
+          ./gradlew --info test
