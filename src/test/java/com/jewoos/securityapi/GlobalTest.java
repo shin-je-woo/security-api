@@ -5,11 +5,17 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class FailedTest {
+public class GlobalTest {
 
     @Test
     @DisplayName("실패하는 테스트")
     void test() {
         assertEquals(1, 2);
+    }
+
+    @Test
+    @DisplayName("성공하는 테스트")
+    void test2() {
+        assertEquals(1, 1);
     }
 }
