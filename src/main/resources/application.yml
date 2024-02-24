@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:mysql://43.201.188.14:3306/securityapi
+    url: jdbc:mysql://43.201.188.14:3307/securityapi
     username: shinjw
     password: shinjwpass
     driver-class-name: com.mysql.cj.jdbc.Driver
