@@ -18,4 +18,10 @@ public class GlobalTest {
     void test2() {
         assertEquals(1, 1);
     }
+
+    @Test
+    @DisplayName("실패하는 테스트2")
+    void test3() {
+        assertEquals(1, 3);
+    }
 }
